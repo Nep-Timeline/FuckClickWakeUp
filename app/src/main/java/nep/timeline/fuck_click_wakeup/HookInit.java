@@ -26,7 +26,7 @@ public class HookInit implements IXposedHookLoadPackage {
                 
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep$OnDoubleClickListener", classLoader, "onSingleTapConfirmed", MotionEvent.class, XC_MethodReplacement.returnConstant(false));
 
-                XposedHelpers.findAndHookConstructor("OplusWakeUpController$AodSingleClickWakeUpCallback", classLoader, "android.content.Context", new XC_MethodHook() {
+                XposedHelpers.findAndHookConstructor("com.oplus.systemui.aod.display.OplusWakeUpController$AodSingleClickWakeUpCallback", classLoader, Context.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         context = (Context) param.args[0];
