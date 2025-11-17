@@ -1,0 +1,2 @@
+# FuckClickWakeUp
+拦截ColorOS全景AOD可通过单击唤醒屏幕
