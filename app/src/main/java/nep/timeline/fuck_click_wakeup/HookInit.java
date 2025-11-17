@@ -28,7 +28,7 @@ public class HookInit implements IXposedHookLoadPackage {
 
                 XposedHelpers.findAndHookConstructor("com.oplus.systemui.aod.display.OplusWakeUpController$AodSingleClickWakeUpCallback", classLoader, Context.class, new XC_MethodHook() {
                     @Override
-                    protected void beforHookedMethod(MethodHookParam param) {
+                    protected void beforeHookedMethod(MethodHookParam param) {
                         context = (Context) param.args[0];
                     }
                 });
