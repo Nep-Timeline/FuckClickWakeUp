@@ -38,8 +38,8 @@ public class HookInit implements IXposedHookLoadPackage {
                         if (XposedHelpers.getBooleanField(smoothTransitionController, "userEnablePanoramicAllDay"))
                             return;
                         param.setResult(null);
-                        if (XposedHelpers.getBooleanField(aodData, "mAodIsInShow"))
-                            return;
+                        // if (XposedHelpers.getBooleanField(aodData, "mAodIsInShow"))
+                        //     return;
                         Object controller = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.display.OplusWakeUpController", classLoader), "instance");
                         if (controller == null)
                             return;
