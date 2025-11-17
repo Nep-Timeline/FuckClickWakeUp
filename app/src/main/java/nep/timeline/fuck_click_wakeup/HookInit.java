@@ -13,7 +13,7 @@ public class HookInit implements IXposedHookLoadPackage {
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam packageParam) {
         if ("com.android.systemui".equals(packageParam.packageName)) {
-            classLoader = packageParam.classLoader;
+            ClassLoader classLoader = packageParam.classLoader;
 
             try {
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.PanoramicAodSingleClickWakeUpController", classLoader, "registerPanoramicAodWakeUpMonitor", XC_MethodReplacement.DO_NOTHING);
