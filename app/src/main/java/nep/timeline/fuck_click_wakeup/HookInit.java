@@ -26,8 +26,16 @@ public class HookInit implements IXposedHookLoadPackage {
                         Object aodData = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.aodclock.constant.AodData", classLoader), "sAodData");
                         if (aodData == null)
                             return;
+                        boolean isAodEnable = (boolean) XposedHelpers.callMethod(aodData, "isAodEnable");
+                        if (!isAodEnable)
+                            return;
                         boolean isPanoramicAod = (boolean) XposedHelpers.callMethod(aodData, "isPanoramicAod");
                         if (!isPanoramicAod)
+                            return;
+                        Object smoothTransitionController = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.display.SmoothTransitionController", classLoader), "sSmoothTransitionController");
+                        if (smoothTransitionController == null)
+                            return;
+                        if (XposedHelpers.getBooleanField(smoothTransitionController, "userEnablePanoramicAllDay"))
                             return;
                         param.setResult(null);
                         if (XposedHelpers.getBooleanField(aodData, "mAodIsInShow"))
