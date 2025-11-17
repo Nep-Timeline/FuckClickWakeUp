@@ -28,7 +28,7 @@ public class HookInit implements IXposedHookLoadPackage {
 
                 XposedHelpers.findAndHookConstructor("com.oplus.systemui.aod.display.OplusWakeUpController$AodSingleClickWakeUpCallback", classLoader, Context.class, new XC_MethodHook() {
                     @Override
-                    protected void beforeHookedMethod(MethodHookParam param) {
+                    protected void beforHookedMethod(MethodHookParam param) {
                         context = (Context) param.args[0];
                     }
                 });
@@ -37,8 +37,8 @@ public class HookInit implements IXposedHookLoadPackage {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         param.setResult(null);
-                        Class<?> companion = XposedHelpers.findClass("com.oplus.systemui.aod.display.OplusWakeUpController$Companion", classLoader);
-                        Object controller = XposedHelpers.callStaticMethod(companion, "getInstance", context);
+                        Class<?> companion = XposedHelpers.findClass("com.oplus.systemui.aod.display.OplusWakeUpController", classLoader);
+                        Object controller = XposedHelpers.getStaticObjectField(companion, "instance");
                         boolean isUpsideDown = XposedHelpers.getBooleanField(controller, "isUpsideDown");
                         if (!isUpsideDown)
                             XposedHelpers.callMethod(controller, "notifyWakeUpCallback", 0);
