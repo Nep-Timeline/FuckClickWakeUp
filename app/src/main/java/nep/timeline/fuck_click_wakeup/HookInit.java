@@ -1,6 +1,7 @@
 package nep.timeline.fuck_click_wakeup;
 
 import android.util.Log;
+import android.content.Context;
 import android.view.MotionEvent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
