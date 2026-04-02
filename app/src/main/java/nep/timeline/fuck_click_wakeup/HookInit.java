@@ -20,6 +20,8 @@ public class HookInit implements IXposedHookLoadPackage {
                 
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep$OnDoubleClickListener", classLoader, "onSingleTapConfirmed", MotionEvent.class, XC_MethodReplacement.returnConstant(false));
 
+                XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep", classLoader, "-$$Nest$mprocessPanoramicWakeup", "com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep", XC_MethodReplacement.returnConstant(false));
+
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.notification.interruption.wakeup.WakeupScreenHelper", classLoader, "powerOnScreen", new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
