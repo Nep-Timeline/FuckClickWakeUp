@@ -46,8 +46,9 @@ public class HookInit implements IXposedHookLoadPackage {
                             XposedHelpers.callMethod(controller, "notifyWakeUpCallback", 0);
                     }
                 });
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
                 XposedBridge.log(GlobalVars.TAG + " -> Your device is unsupported!");
+                XposedBridge.log(t);
             }
         }
     }
