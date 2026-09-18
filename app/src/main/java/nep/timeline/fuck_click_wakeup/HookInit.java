@@ -17,7 +17,11 @@ public class HookInit implements IXposedHookLoadPackage {
             ClassLoader classLoader = packageParam.classLoader;
 
             try {
-                XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.AodViewSingleClickWakeUpHolder", classLoader, "registerAodViewWakeUpEventCallback", Context.class, XC_MethodReplacement.DO_NOTHING);
+                Class<?> clazz = XposedHelpers.findClassIfExists("com.oplus.systemui.aod.scene.AodSingleClickWakeUpCallback", classLoader);
+                if (clazz == null)
+                    XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.PanoramicAodGestureController", classLoader, "registerPanoramicAodGestureMonitor", XC_MethodReplacement.DO_NOTHING);
+                else
+                    XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.AodSingleClickWakeUpCallback", classLoader, "registerPanoramicAodWakeUpMonitor", XC_MethodReplacement.DO_NOTHING);
                 
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep$OnDoubleClickListener", classLoader, "onSingleTapConfirmed", MotionEvent.class, XC_MethodReplacement.returnConstant(false));
 
