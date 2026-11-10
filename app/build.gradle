@@ -10,7 +10,7 @@ android {
         applicationId "nep.timeline.fuck_click_wakeup"
         minSdk 35
         targetSdk 37
-        versionCode 6
+        versionCode 7
         versionName "Mystery"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
