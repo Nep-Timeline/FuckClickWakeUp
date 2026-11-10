@@ -3,6 +3,8 @@ package nep.timeline.fuck_click_wakeup;
 import android.view.MotionEvent;
 import android.content.Context;
 
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XC_MethodHook;
@@ -18,9 +20,19 @@ public class HookInit implements IXposedHookLoadPackage {
 
             try {
                 Class<?> clazz = XposedHelpers.findClassIfExists("com.oplus.systemui.aod.scene.PanoramicAodSingleClickWakeUpController", classLoader);
-                if (clazz == null)
-                    XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.PanoramicAodGestureController", classLoader, "registerPanoramicAodGestureMonitor", XC_MethodReplacement.DO_NOTHING);
-                else
+                if (clazz == null) {
+                    Class<?> controller = XposedHelpers.findClassIfExists("com.oplus.systemui.aod.scene.PanoramicAodGestureController", classLoader);
+                    if (controller == null) {
+                        XposedBridge.log(GlobalVars.TAG + " -> Your device is unsupported!");
+                        return;
+                    } else {
+                        for (Method method : controller.getDeclaredMethods()) {
+                            if (!method.getName().equals("registerPanoramicAodGestureMonitor"))
+                                continue;
+
+                            XposedBridge.hook(method, XC_MethodReplacement.DO_NOTHING);
+                        }
+                } else
                     XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.PanoramicAodSingleClickWakeUpController", classLoader, "registerPanoramicAodWakeUpMonitor", XC_MethodReplacement.DO_NOTHING);
                 
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep$OnDoubleClickListener", classLoader, "onSingleTapConfirmed", MotionEvent.class, XC_MethodReplacement.returnConstant(false));
