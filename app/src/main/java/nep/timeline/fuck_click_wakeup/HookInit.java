@@ -1,7 +1,6 @@
 package nep.timeline.fuck_click_wakeup;
 
 import android.view.MotionEvent;
-import android.content.Context;
 
 import java.lang.reflect.Method;
 
@@ -25,12 +24,12 @@ public class HookInit implements IXposedHookLoadPackage {
                     if (controller == null) {
                         XposedBridge.log(GlobalVars.TAG + " -> Your device is unsupported!");
                         return;
-                    } else {
+                    } else
                         for (Method method : controller.getDeclaredMethods()) {
                             if (!method.getName().equals("registerPanoramicAodGestureMonitor"))
                                 continue;
 
-                            XposedBridge.hook(method, XC_MethodReplacement.DO_NOTHING);
+                            XposedBridge.hookMethod(method, XC_MethodReplacement.DO_NOTHING);
                         }
                 } else
                     XposedHelpers.findAndHookMethod("com.oplus.systemui.aod.scene.PanoramicAodSingleClickWakeUpController", classLoader, "registerPanoramicAodWakeUpMonitor", XC_MethodReplacement.DO_NOTHING);
