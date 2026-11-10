@@ -38,29 +38,40 @@ public class HookInit implements IXposedHookLoadPackage {
 
                 XposedHelpers.findAndHookMethod("com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep", classLoader, "-$$Nest$mprocessPanoramicWakeup", "com.oplus.systemui.keyguard.gesture.OplusDoubleClickSleep", XC_MethodReplacement.returnConstant(false));
 
-                XposedHelpers.findAndHookMethod("com.oplus.systemui.notification.interruption.wakeup.WakeupScreenHelper", classLoader, "powerOnScreen", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) {
-                        Object aodData = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.aodclock.constant.AodData", classLoader), "sAodData");
-                        if (aodData == null)
-                            return;
-                        boolean isAodEnable = (boolean) XposedHelpers.callMethod(aodData, "isAodEnable");
-                        if (!isAodEnable)
-                            return;
-                        boolean isPanoramicAod = (boolean) XposedHelpers.callMethod(aodData, "isPanoramicAod");
-                        if (!isPanoramicAod)
-                            return;
-                        param.setResult(null);
-                        if (XposedHelpers.getBooleanField(aodData, "mAodIsInShow"))
-                            return;
-                        Object controller = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.display.OplusWakeUpController", classLoader), "instance");
-                        if (controller == null)
-                            return;
-                        boolean isUpsideDown = XposedHelpers.getBooleanField(controller, "isUpsideDown");
-                        if (!isUpsideDown)
-                            XposedHelpers.callMethod(controller, "notifyWakeUpCallback", 0);
-                    }
-                });
+                Class<?> helper = XposedHelpers.findClassIfExists("com.oplus.systemui.notification.interruption.wakeup.WakeupScreenHelper", classLoader);
+                if (helper == null) {
+                    XposedBridge.log(GlobalVars.TAG + " -> Your device is unsupported!");
+                    return;
+                }
+
+                for (Method method : helper.getDeclaredMethods()) {
+                    if (!method.getName().equals("powerOnScreen"))
+                        continue;
+
+                    XposedBridge.hookMethod(method, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) {
+                            Object aodData = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.aodclock.constant.AodData", classLoader), "sAodData");
+                            if (aodData == null)
+                                return;
+                            boolean isAodEnable = (boolean) XposedHelpers.callMethod(aodData, "isAodEnable");
+                            if (!isAodEnable)
+                                return;
+                            boolean isPanoramicAod = (boolean) XposedHelpers.callMethod(aodData, "isPanoramicAod");
+                            if (!isPanoramicAod)
+                                return;
+                            param.setResult(null);
+                            if (XposedHelpers.getBooleanField(aodData, "mAodIsInShow"))
+                                return;
+                            Object controller = XposedHelpers.getStaticObjectField(XposedHelpers.findClass("com.oplus.systemui.aod.display.OplusWakeUpController", classLoader), "instance");
+                            if (controller == null)
+                                return;
+                            boolean isUpsideDown = XposedHelpers.getBooleanField(controller, "isUpsideDown");
+                            if (!isUpsideDown)
+                                XposedHelpers.callMethod(controller, "notifyWakeUpCallback", 0);
+                        }
+                    });
+                }
             } catch (Throwable t) {
                 XposedBridge.log(GlobalVars.TAG + " -> Your device is unsupported!");
                 XposedBridge.log(t);
